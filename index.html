@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>汉字水波动画</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            width: 100%;
+            text-align: center;
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 2.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .input-section {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-bottom: 40px;
+        }
+        
+        .input-group {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 15px;
+        }
+        
+        input {
+            padding: 12px 15px;
+            font-size: 1.2rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            width: 200px;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus {
+            border-color: #4a90e2;
+            outline: none;
+        }
+        
+        button {
+            background: #4a90e2;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 1.2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
+        }
+        
+        button:hover {
+            background: #3a7bc8;
+            transform: translateY(-2px);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        .display-area {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 300px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .character {
+            font-size: 8rem;
+            color: #333;
+            cursor: pointer;
+            position: relative;
+            z-index: 10;
+            transition: transform 0.3s;
+            user-select: none;
+        }
+        
+        .character:hover {
+            transform: scale(1.05);
+        }
+        
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(74, 144, 226, 0.4);
+            transform: scale(0);
+            animation: ripple-animation 0.8s linear;
+            pointer-events: none;
+        }
+        
+        @keyframes ripple-animation {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+        
+        .instructions {
+            margin-top: 20px;
+            color: #666;
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>汉字水波动画</h1>
+        
+        <div class="input-section">
+            <div class="input-group">
+                <input type="text" id="character-input" placeholder="请输入一个汉字" maxlength="1">
+                <button id="display-btn">显示汉字</button>
+            </div>
+            <p class="instructions">输入一个汉字，点击"显示汉字"按钮，然后点击显示的汉字查看水波动画效果</p>
+        </div>
+        
+        <div class="display-area">
+            <div class="character" id="character-display">字</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const characterInput = document.getElementById('character-input');
+            const displayBtn = document.getElementById('display-btn');
+            const characterDisplay = document.getElementById('character-display');
+            const displayArea = document.querySelector('.display-area');
+            
+            // 显示汉字
+            displayBtn.addEventListener('click', function() {
+                const inputValue = characterInput.value.trim();
+                if (inputValue) {
+                    characterDisplay.textContent = inputValue;
+                } else {
+                    alert('请输入一个汉字');
+                }
+            });
+            
+            // 创建水波动画
+            characterDisplay.addEventListener('click', function(e) {
+                createRipple(e);
+            });
+            
+            function createRipple(e) {
+                const ripple = document.createElement('div');
+                ripple.classList.add('ripple');
+                
+                const rect = characterDisplay.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                const x = e.clientX - rect.left - size / 2;
+                const y = e.clientY - rect.top - size / 2;
+                
+                ripple.style.width = ripple.style.height = `${size}px`;
+                ripple.style.left = `${x}px`;
+                ripple.style.top = `${y}px`;
+                
+                displayArea.appendChild(ripple);
+                
+                // 动画结束后移除元素
+                setTimeout(() => {
+                    ripple.remove();
+                }, 800);
+            }
+            
+            // 示例：点击页面任意位置也可以创建水波
+            displayArea.addEventListener('click', function(e) {
+                if (e.target !== characterDisplay) {
+                    createRipple(e);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
