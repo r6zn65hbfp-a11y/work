@@ -93,71 +93,91 @@
   <p id="message"></p>
   <p id="hint">提示：你可以在浏览器按 F12 看 Console 输出，方便你自己调试坐标。玩家是看不到这些设定的。</p>
 
-  <script>
-    // ==============================
-    // ② 在这里设置“正确区域”（你可以改）
-    // baseWidth / baseHeight：你图片的设计尺寸
-    // target.x / target.y：正确位置（在这个设计尺寸下的坐标）
-    // target.r：允许误差半径
-    // ==============================
+<script>
+  // 原图尺寸（你确认过是 3000 × 2560）
+  const baseWidth = 3000;
+  const baseHeight = 2560;
 
-    const baseWidth = 800;   // 把这里改成你的图片宽度（像素）
-    const baseHeight = 600;  // 把这里改成你的图片高度（像素）
-
-    const target = {
-      x: 350,   // 目标中心的 x 坐标
-      y: 220,   // 目标中心的 y 坐标
-      r: 35     // 点击的判定半径，越大越好点中
-    };
-
-    const img = document.getElementById('game-image');
-    const msg = document.getElementById('message');
-    const container = document.getElementById('game-container');
-
-    let markerEl = null; // 用来显示你刚刚点的位置的小圆点
-
-    img.addEventListener('click', function (event) {
-      const rect = img.getBoundingClientRect();
-
-      // 点击点相对于图片左上角的坐标（实际显示尺寸）
-      const clickX = event.clientX - rect.left;
-      const clickY = event.clientY - rect.top;
-
-      const displayWidth = img.clientWidth;
-      const displayHeight = img.clientHeight;
-
-      // 把“实际显示尺寸上的点击点”换算到“设计尺寸”上
-      const scaledX = clickX * baseWidth / displayWidth;
-      const scaledY = clickY * baseHeight / displayHeight;
-
-      // 计算与目标中心的距离
-      const dx = scaledX - target.x;
-      const dy = scaledY - target.y;
-      const distance = Math.sqrt(dx * dx + dy * dy);
-
-      // 在图片上画一个小圈圈，方便你看到刚刚点在哪里
-      showClickMarker(clickX, clickY);
-
-      if (distance <= target.r) {
-        msg.textContent = 'Bingo！你点对啦！🎉';
-      } else {
-        msg.textContent = '没点中，再试一次～';
-      }
-
-      // 给你自己调试用：在 Console 里看坐标
-      console.log(`点击位置（设计尺寸坐标）：x=${scaledX.toFixed(0)}, y=${scaledY.toFixed(0)}`);
-    });
-
-    // 显示一个点击的小圆点（给你调坐标用）
-    function showClickMarker(x, y) {
-      if (!markerEl) {
-        markerEl = document.createElement('div');
-        markerEl.className = 'click-marker';
-        container.appendChild(markerEl);
-      }
-      markerEl.style.left = x + 'px';
-      markerEl.style.top = y + 'px';
+  // 两个目标点 + 各自的容错范围
+  // tolX = 横向容错; tolY = 纵向容错
+  const targets = [
+    {
+      name: '第一个目标',
+      x: 1737,
+      y: 1345,
+      tolX: 40,  // 横向 ±40
+      tolY: 60   // 纵向 ±60
+    },
+    {
+      name: '第二个目标',
+      x: 2546,
+      y: 2062,
+      tolX: 40,  // 横向 ±40
+      tolY: 40   // 纵向 ±40
     }
-  </script>
+  ];
+
+  const img = document.getElementById('game-image');
+  const msg = document.getElementById('message');
+  const container = document.getElementById('game-container');
+
+  let markerEl = null; // 用来显示你刚刚点的位置的小圆点
+
+  img.addEventListener('click', function (event) {
+    const rect = img.getBoundingClientRect();
+
+    // 点击点相对于图片左上角（以当前显示尺寸）的坐标
+    const clickX = event.clientX - rect.left;
+    const clickY = event.clientY - rect.top;
+
+    const displayWidth = img.clientWidth;
+    const displayHeight = img.clientHeight;
+
+    // 把“显示尺寸”上的坐标换算成“原图 3000×2560”坐标
+    const scaledX = clickX * baseWidth / displayWidth;
+    const scaledY = clickY * baseHeight / displayHeight;
+
+    // 在图片上画一个小圆点，方便你自己看点到哪
+    showClickMarker(clickX, clickY);
+
+    // 检查有没有命中某个目标区域
+    let hitTarget = null;
+
+    for (const t of targets) {
+      const dx = Math.abs(scaledX - t.x);
+      const dy = Math.abs(scaledY - t.y);
+
+      // 这里用“矩形区域”判定：横向在 ±tolX 内，纵向在 ±tolY 内
+      if (dx <= t.tolX && dy <= t.tolY) {
+        hitTarget = t;
+        break;
+      }
+    }
+
+    if (hitTarget) {
+      if (hitTarget === targets[0]) {
+        msg.textContent = 'Bingo！你找到了第一个目标！🎉';
+      } else if (hitTarget === targets[1]) {
+        msg.textContent = '太厉害了，第二个目标也被你找到了！✨';
+      }
+    } else {
+      msg.textContent = '没点中两个目标，再试一次～';
+    }
+
+    // 给你调试用：在浏览器 Console 看你刚才点击的“原图坐标”
+    console.log(`点击（原图坐标）：x=${scaledX.toFixed(0)}, y=${scaledY.toFixed(0)}`);
+  });
+
+  // 显示点击位置的小圆点
+  function showClickMarker(x, y) {
+    if (!markerEl) {
+      markerEl = document.createElement('div');
+      markerEl.className = 'click-marker';
+      container.appendChild(markerEl);
+    }
+    markerEl.style.left = x + 'px';
+    markerEl.style.top = y + 'px';
+  }
+</script>
 </body>
 </html>
