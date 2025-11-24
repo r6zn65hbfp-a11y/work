@@ -156,12 +156,12 @@
 
     if (hitTarget) {
       if (hitTarget === targets[0]) {
-        msg.textContent = 'Bingo！你找到了第一个目标！🎉';
+        msg.textContent = 'Bingo! First target found!🎉';
       } else if (hitTarget === targets[1]) {
-        msg.textContent = '太厉害了，第二个目标也被你找到了！✨';
+        msg.textContent = 'Excellent! Two for two!✨';
       }
     } else {
-      msg.textContent = '没点中两个目标，再试一次～';
+      msg.textContent = 'Not quite! You need to find both. Try again!';
     }
 
     // 给你调试用：在浏览器 Console 看你刚才点击的“原图坐标”
