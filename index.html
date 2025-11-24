@@ -45,8 +45,8 @@
 
     #game-image {
       display: block;
-      max-width: 90vw;   /* 适配手机屏幕 */
-      width: 800px;      /* 你可以改成你的图片设计宽度 */
+      max-width: 90vw;
+      width: 800px;
       height: auto;
       cursor: pointer;
       border-radius: 4px;
@@ -85,8 +85,6 @@
   </header>
 
   <div id="game-container">
-    <!-- ① 这里的 src 要换成你仓库里的图片路径 -->
-    <!-- 比如你在仓库里建了 img 文件夹，图片叫 scene.jpg -->
   <img id="game-image" src="IMG_4835.JPG">
   </div>
 
@@ -94,7 +92,6 @@
   <p id="hint">提示：你可以在浏览器按 F12 看 Console 输出，方便你自己调试坐标。玩家是看不到这些设定的。</p>
 
 <script>
-  // 原图尺寸（你确认过是 3000 × 2560）
   const baseWidth = 1137;
   const baseHeight = 1520;
 
@@ -105,15 +102,15 @@
       name: '第一个目标',
       x: 69,
       y: 1222,
-      tolX: 40,  // 横向 ±40
-      tolY: 40   // 纵向 ±60
+      tolX: 40,  
+      tolY: 40  
     },
     {
       name: '第二个目标',
       x: 671,
       y: 692,
-      tolX: 40,  // 横向 ±40
-      tolY: 40   // 纵向 ±40
+      tolX: 40, 
+      tolY: 40  
     }
   ];
 
@@ -121,7 +118,7 @@
   const msg = document.getElementById('message');
   const container = document.getElementById('game-container');
 
-  let markerEl = null; // 用来显示你刚刚点的位置的小圆点
+  let markerEl = null; 
 
   img.addEventListener('click', function (event) {
     const rect = img.getBoundingClientRect();
@@ -133,7 +130,6 @@
     const displayWidth = img.clientWidth;
     const displayHeight = img.clientHeight;
 
-    // 把“显示尺寸”上的坐标换算成“原图 3000×2560”坐标
     const scaledX = clickX * baseWidth / displayWidth;
     const scaledY = clickY * baseHeight / displayHeight;
 
