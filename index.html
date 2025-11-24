@@ -99,6 +99,126 @@
   // tolX = 横向容错; tolY = 纵向容错
   const targets = [
     {
+      name: 'Red Pocket 1',
+      x: 69,
+      y: 1222,
+      tolX: 40,  
+      tolY: 40  
+    },
+    {
+      name: 'Red Pocket 2',
+      x: 671,
+      y: 692,
+      tolX: 40, 
+      tolY: 40  
+    }
+  ];
+
+  const img = document.getElementById('game-image');
+  const msg = document.getElementById('message');
+  const container = document.getElementById('game-container');
+
+  <!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>找一找小游戏 | Find the Spot</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      min-height: 100vh;
+      background: #f5f5f5;
+    }
+
+    header {
+      margin-top: 24px;
+      text-align: center;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 24px;
+    }
+
+    p.subtitle {
+      margin: 0 0 16px;
+      color: #555;
+      font-size: 14px;
+    }
+
+    #game-container {
+      margin-top: 12px;
+      margin-bottom: 16px;
+      position: relative;
+      display: inline-block;
+      background: #fff;
+      padding: 8px;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    }
+
+    #game-image {
+      display: block;
+      max-width: 90vw;
+      width: 800px;
+      height: auto;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+
+    #message {
+      min-height: 24px;
+      font-size: 16px;
+      margin-bottom: 12px;
+    }
+
+    #hint {
+      font-size: 12px;
+      color: #888;
+      margin-bottom: 24px;
+      text-align: center;
+      max-width: 90vw;
+    }
+
+    /* 小小的点击反馈圆点（只在你这边测试时方便） */
+    .click-marker {
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      border: 2px solid rgba(0,0,0,0.4);
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>GAME FIND ME</h1>
+    <p class="subtitle">在图片里点对位置，就会 Bingo！</p>
+  </header>
+
+  <div id="game-container">
+  <img id="game-image" src="IMG_4835.JPG">
+  </div>
+
+  <p id="message"></p>
+  <p id="hint">提示：你可以在浏览器按 F12 看 Console 输出，方便你自己调试坐标。玩家是看不到这些设定的。</p>
+
+<script>
+  const baseWidth = 1137;
+  const baseHeight = 1520;
+
+  // 两个目标点 + 各自的容错范围
+  // tolX = 横向容错; tolY = 纵向容错
+  const targets = [
+    {
       name: '第一个目标',
       x: 69,
       y: 1222,
@@ -175,5 +295,7 @@
     markerEl.style.top = y + 'px';
   }
 </script>
+</body>
+</html>
 </body>
 </html>
