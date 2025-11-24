@@ -66,7 +66,6 @@
       max-width: 90vw;
     }
 
-    /* 小小的点击反馈圆点（只在你这边测试时方便） */
     .click-marker {
       position: absolute;
       width: 12px;
@@ -85,217 +84,118 @@
   </header>
 
   <div id="game-container">
-  <img id="game-image" src="IMG_4835.JPG">
+    <img id="game-image" src="IMG_4835.JPG">
   </div>
 
   <p id="message"></p>
   <p id="hint">提示：你可以在浏览器按 F12 看 Console 输出，方便你自己调试坐标。玩家是看不到这些设定的。</p>
 
-<script>
-  const baseWidth = 1137;
-  const baseHeight = 1520;
+  <script>
+    // 这里用你现在的“原图坐标系”尺寸
+    const baseWidth = 1137;
+    const baseHeight = 1520;
 
-  // 两个目标点 + 各自的容错范围
-  // tolX = 横向容错; tolY = 纵向容错
-  const targets = [
-    {
-      name: 'Red Pocket 1',
-      x: 69,
-      y: 1222,
-      tolX: 40,  
-      tolY: 40  
-    },
-    {
-      name: 'Red Pocket 2',
-      x: 671,
-      y: 692,
-      tolX: 40, 
-      tolY: 40  
-    }
-  ];
-
-  const img = document.getElementById('game-image');
-  const msg = document.getElementById('message');
-  const container = document.getElementById('game-container');
-
-  <!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-  <meta charset="UTF-8">
-  <title>找一找小游戏 | Find the Spot</title>
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-start;
-      min-height: 100vh;
-      background: #f5f5f5;
-    }
-
-    header {
-      margin-top: 24px;
-      text-align: center;
-    }
-
-    h1 {
-      margin: 0 0 8px;
-      font-size: 24px;
-    }
-
-    p.subtitle {
-      margin: 0 0 16px;
-      color: #555;
-      font-size: 14px;
-    }
-
-    #game-container {
-      margin-top: 12px;
-      margin-bottom: 16px;
-      position: relative;
-      display: inline-block;
-      background: #fff;
-      padding: 8px;
-      border-radius: 8px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
-    }
-
-    #game-image {
-      display: block;
-      max-width: 90vw;
-      width: 800px;
-      height: auto;
-      cursor: pointer;
-      border-radius: 4px;
-    }
-
-    #message {
-      min-height: 24px;
-      font-size: 16px;
-      margin-bottom: 12px;
-    }
-
-    #hint {
-      font-size: 12px;
-      color: #888;
-      margin-bottom: 24px;
-      text-align: center;
-      max-width: 90vw;
-    }
-
-    /* 小小的点击反馈圆点（只在你这边测试时方便） */
-    .click-marker {
-      position: absolute;
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      border: 2px solid rgba(0,0,0,0.4);
-      pointer-events: none;
-      transform: translate(-50%, -50%);
-    }
-  </style>
-</head>
-<body>
-  <header>
-    <h1>GAME FIND ME</h1>
-    <p class="subtitle">在图片里点对位置，就会 Bingo！</p>
-  </header>
-
-  <div id="game-container">
-  <img id="game-image" src="IMG_4835.JPG">
-  </div>
-
-  <p id="message"></p>
-  <p id="hint">提示：你可以在浏览器按 F12 看 Console 输出，方便你自己调试坐标。玩家是看不到这些设定的。</p>
-
-<script>
-  const baseWidth = 1137;
-  const baseHeight = 1520;
-
-  // 两个目标点 + 各自的容错范围
-  // tolX = 横向容错; tolY = 纵向容错
-  const targets = [
-    {
-      name: '第一个目标',
-      x: 69,
-      y: 1222,
-      tolX: 40,  
-      tolY: 40  
-    },
-    {
-      name: '第二个目标',
-      x: 671,
-      y: 692,
-      tolX: 40, 
-      tolY: 40  
-    }
-  ];
-
-  const img = document.getElementById('game-image');
-  const msg = document.getElementById('message');
-  const container = document.getElementById('game-container');
-
-  let markerEl = null; 
-
-  img.addEventListener('click', function (event) {
-    const rect = img.getBoundingClientRect();
-
-    // 点击点相对于图片左上角（以当前显示尺寸）的坐标
-    const clickX = event.clientX - rect.left;
-    const clickY = event.clientY - rect.top;
-
-    const displayWidth = img.clientWidth;
-    const displayHeight = img.clientHeight;
-
-    const scaledX = clickX * baseWidth / displayWidth;
-    const scaledY = clickY * baseHeight / displayHeight;
-
-    // 在图片上画一个小圆点，方便你自己看点到哪
-    showClickMarker(clickX, clickY);
-
-    // 检查有没有命中某个目标区域
-    let hitTarget = null;
-
-    for (const t of targets) {
-      const dx = Math.abs(scaledX - t.x);
-      const dy = Math.abs(scaledY - t.y);
-
-      // 这里用“矩形区域”判定：横向在 ±tolX 内，纵向在 ±tolY 内
-      if (dx <= t.tolX && dy <= t.tolY) {
-        hitTarget = t;
-        break;
+    // 两个目标点 + 各自的容错范围
+    // tolX = 横向容错; tolY = 纵向容错
+    const targets = [
+      {
+        name: '第一个目标',
+        x: 69,
+        y: 1222,
+        tolX: 40,   // 横向 ±40
+        tolY: 60    // 纵向 ±60（你说第一个想大一点）
+      },
+      {
+        name: '第二个目标',
+        x: 671,
+        y: 692,
+        tolX: 40,   // 横向 ±40
+        tolY: 40    // 纵向 ±40
       }
-    }
+    ];
 
-    if (hitTarget) {
-      if (hitTarget === targets[0]) {
-        msg.textContent = 'Bingo! First target found!🎉';
-      } else if (hitTarget === targets[1]) {
-        msg.textContent = 'Excellent! Two for two!✨';
+    const img = document.getElementById('game-image');
+    const msg = document.getElementById('message');
+    const container = document.getElementById('game-container');
+
+    let markerEl = null;
+
+    // 记录“这个目标有没有被找到了”
+    let found = [false, false];  // 对应 targets[0], targets[1]
+    let foundCount = 0;          // 已经找到多少个不同的目标
+
+    img.addEventListener('click', function (event) {
+      const rect = img.getBoundingClientRect();
+
+      // 点击点相对于图片左上角（以当前显示尺寸）的坐标
+      const clickX = event.clientX - rect.left;
+      const clickY = event.clientY - rect.top;
+
+      const displayWidth = img.clientWidth;
+      const displayHeight = img.clientHeight;
+
+      // 换算到“原图坐标系”
+      const scaledX = clickX * baseWidth / displayWidth;
+      const scaledY = clickY * baseHeight / displayHeight;
+
+      // 在图片上画一个小圆点，方便你自己看点到哪
+      showClickMarker(clickX, clickY);
+
+      // 检查有没有命中某个目标区域
+      let hitIndex = -1;
+
+      for (let i = 0; i < targets.length; i++) {
+        const t = targets[i];
+        const dx = Math.abs(scaledX - t.x);
+        const dy = Math.abs(scaledY - t.y);
+
+        if (dx <= t.tolX && dy <= t.tolY) {
+          hitIndex = i;
+          break;
+        }
       }
-    } else {
-      msg.textContent = 'Not quite! You need to find both. Try again!';
-    }
 
-    // 给你调试用：在浏览器 Console 看你刚才点击的“原图坐标”
-    console.log(`点击（原图坐标）：x=${scaledX.toFixed(0)}, y=${scaledY.toFixed(0)}`);
-  });
+      if (hitIndex >= 0) {
+        // 点中了某一个目标
+        if (!found[hitIndex]) {
+          // 第一次点中这个目标
+          found[hitIndex] = true;
+          foundCount++;
 
-  // 显示点击位置的小圆点
-  function showClickMarker(x, y) {
-    if (!markerEl) {
-      markerEl = document.createElement('div');
-      markerEl.className = 'click-marker';
-      container.appendChild(markerEl);
+          if (foundCount === 1) {
+            // 第一次找到任意一个目标
+            msg.textContent = '你找到了其中一个！🎉';
+          } else if (foundCount === 2) {
+            // 第二次找到，说明两个都找到了
+            msg.textContent = '太强了，两个都被你找到了！✨';
+          }
+        } else {
+          // 这个目标以前已经被找过了
+          if (foundCount === 1) {
+            msg.textContent = '这个你已经找到过啦，再去找另一个～';
+          } else if (foundCount === 2) {
+            msg.textContent = '两个都找到了，你已经通关啦！🥳';
+          }
+        }
+      } else {
+        // 完全没点中任何目标
+        msg.textContent = '没点中，再试一次！';
+      }
+
+      // 调试用：在 Console 看“原图坐标”
+      console.log(`点击（原图坐标）：x=${scaledX.toFixed(0)}, y=${scaledY.toFixed(0)}`);
+    });
+
+    // 显示点击位置的小圆点
+    function showClickMarker(x, y) {
+      if (!markerEl) {
+        markerEl = document.createElement('div');
+        markerEl.className = 'click-marker';
+        container.appendChild(markerEl);
+      }
+      markerEl.style.left = x + 'px';
+      markerEl.style.top = y + 'px';
     }
-    markerEl.style.left = x + 'px';
-    markerEl.style.top = y + 'px';
-  }
-</script>
-</body>
-</html>
+  </script>
 </body>
 </html>
