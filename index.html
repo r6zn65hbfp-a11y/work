@@ -103,15 +103,15 @@
         name: 'target1',
         x: 69,
         y: 1222,
-        tolX: 20, 
-        tolY: 20  
+        tolX: 20,
+        tolY: 20
       },
       {
         name: 'target2',
         x: 671,
         y: 692,
-        tolX: 20, 
-        tolY: 20  
+        tolX: 20,
+        tolY: 20
       }
     ];
 
@@ -122,21 +122,27 @@
     let markerEl = null; // 显示你点击位置的小圆点
 
     img.addEventListener('click', function (event) {
-      const rect = img.getBoundingClientRect();
+      // 容器和图片各自的矩形信息
+      const containerRect = container.getBoundingClientRect();
+      const imgRect = img.getBoundingClientRect();
 
-      // 点击点在“当前显示尺寸”上的坐标
-      const clickX = event.clientX - rect.left;
-      const clickY = event.clientY - rect.top;
+      // 点击点相对于「容器」的坐标 —— 用来画小圆点，避免偏移
+      const clickXOnContainer = event.clientX - containerRect.left;
+      const clickYOnContainer = event.clientY - containerRect.top;
 
-      const displayWidth = img.clientWidth;
-      const displayHeight = img.clientHeight;
+      // 点击点相对于「图片本身」的坐标 —— 用来做坐标换算和命中判断
+      const clickXOnImg = event.clientX - imgRect.left;
+      const clickYOnImg = event.clientY - imgRect.top;
+
+      const displayWidth = imgRect.width;
+      const displayHeight = imgRect.height;
 
       // 等比例换算到“原图坐标系”（baseWidth × baseHeight）上
-      const scaledX = clickX * baseWidth / displayWidth;
-      const scaledY = clickY * baseHeight / displayHeight;
+      const scaledX = clickXOnImg * baseWidth / displayWidth;
+      const scaledY = clickYOnImg * baseHeight / displayHeight;
 
-      // 画圆点（方便你自己看点到哪）
-      showClickMarker(clickX, clickY);
+      // 画圆点（现在是严格跟着你点的位置走）
+      showClickMarker(clickXOnContainer, clickYOnContainer);
 
       // 判断是否命中某个目标
       let hitTarget = null;
@@ -150,7 +156,6 @@
       }
 
       if (hitTarget) {
-        // ✅ 只跟“哪个目标”有关，不跟“第几次点到”有关
         if (hitTarget === targets[0]) {
           msg.textContent = 'Bingo! Haha you found me!';
         } else if (hitTarget === targets[1]) {
